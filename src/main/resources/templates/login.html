@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 팩폭 면접관 - 로그인</title>
+    <link rel="stylesheet" href="/css/login/login.css">
+    <script src="/js/login/login.js" defer></script>
+</head>
+<body>
+
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+
+<div class="wrapper">
+    <div class="login-panel">
+
+        <div class="character-side">
+            <div class="character-group">
+                <div class="upper-layer">
+                    <div class="block black">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                    <div class="block silver">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                </div>
+                <div class="lower-layer">
+                    <div class="block lime">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                    <div class="block red">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                    <div class="block yellow">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="character-text">
+                <h3>면접 준비 되셨나요?</h3>
+                <p>AI 면접관들이 당신을 지켜보고 있습니다</p>
+            </div>
+        </div>
+
+        <div class="form-side">
+            <h2>AI 팩폭 면접관</h2>
+            <div class="input-group">
+                <input type="email" id="email" class="input-field" placeholder="이메일 (아이디)" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" class="input-field" placeholder="비밀번호" required>
+            </div>
+            <button class="btn-login" onclick="login()">로그인</button>
+            <div class="signup-link">
+                아직 회원이 아니신가요? <a href="/api/v1/auth/signupP">회원가입 하기</a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="toast" class="toast">알림 메시지</div>
+
+</body>
+</html>

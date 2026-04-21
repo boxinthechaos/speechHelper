@@ -7,14 +7,12 @@ import org.example.speechhelper.auth.dto.LoginRequestDto;
 import org.example.speechhelper.auth.service.AuthService;
 import org.example.speechhelper.auth.dto.SignUpRequestDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
@@ -43,5 +41,15 @@ public class AuthController {
         response.addCookie(accessCookie);
 
         return ResponseEntity.ok("로그인 성공");
+    }
+
+    @GetMapping("/loginP")
+    public String loginP(){
+        return "login";
+    }
+
+    @GetMapping("/signupP")
+    public String signupP(){
+        return "signup";
     }
 }

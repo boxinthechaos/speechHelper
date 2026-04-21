@@ -4,117 +4,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 팩폭 면접관</title>
-    <style>
-        body { font-family: 'Malgun Gothic', sans-serif; background-color: #f4f7f6; color: #333; max-width: 600px; margin: 40px auto; padding: 20px; }
-        h2 { text-align: center; color: #2c3e50; }
-        .box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        label { font-weight: bold; margin-bottom: 5px; display: block; }
-        textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; resize: vertical; }
-        button { width: 100%; padding: 12px; font-size: 16px; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; color: white; transition: 0.3s; }
-        .btn-submit { background-color: #007bff; }
-        .btn-submit:hover { background-color: #0056b3; }
-        .btn-tts { background-color: #28a745; margin-top: 10px; }
-        .btn-tts:hover { background-color: #218838; }
-        .btn-stop { background-color: #dc3545; margin-top: 10px; }
-        .btn-stop:hover { background-color: #c82333; }
-
-        #feedbackBox { display: none; }
-        #feedbackText { white-space: pre-wrap; line-height: 1.6; background: #eef2f3; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff; }
-        .loader { text-align: center; font-weight: bold; color: #007bff; display: none; margin: 10px 0; }
-    </style>
+    <link rel="stylesheet" href="/css/interview/interview.css">
+    <link rel="stylesheet" href="/css/common/common.css">
+    <script src="/js/interview/interview.js" defer></script>
 </head>
 <body>
 
-<h2>🤖 AI 팩폭 면접관</h2>
+<div th:replace="~{fragments/nav :: navbar}"></div>
 
-<div class="box">
-    <label for="question">면접 질문:</label>
-    <textarea id="question" rows="2" placeholder="예: 우리 회사에 지원한 동기가 무엇인가요?"></textarea>
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
 
-    <label for="answer">내 답변:</label>
-    <textarea id="answer" rows="3" placeholder="예: 돈 벌려고 지원했습니다. 집이랑 가깝기도 하고요."></textarea>
+<div class="page-wrapper">
 
-    <button class="btn-submit" onclick="getFeedback()">팩폭 맞기 🥊</button>
-    <div id="loader" class="loader">면접관이 한숨을 쉬며 피드백을 작성 중입니다... ⏳</div>
+    <header class="page-header">
+        <h2>🤖 AI 팩폭 면접관</h2>
+        <p class="page-subtitle">AI 면접관에게 직접 피드백을 받아보세요</p>
+    </header>
+
+    <section class="section">
+
+        <div id="categoryView">
+            <div class="section-title">
+                <span class="section-icon">🗂️</span>
+                면접 분야 선택
+                <span class="section-hint">원하는 분야를 클릭하세요</span>
+            </div>
+            <div id="categoryCards" class="card-grid">
+                <div class="card-loader">
+                    <div class="spinner"></div>
+                    질문 족보를 불러오는 중입니다... ⏳
+                </div>
+            </div>
+        </div>
+
+        <div id="questionView" style="display: none;">
+            <div class="section-title">
+                <button class="btn-back" onclick="goBackToCategories()">⬅️ 뒤로가기</button>
+                <span id="currentCategoryTitle" style="margin-left: 8px;">질문 리스트</span>
+            </div>
+            <div id="questionCards" class="card-grid"></div>
+        </div>
+
+    </section>
+
+    <section id="answerSection" class="box answer-box" style="display: none;">
+        <h3 id="selectedQuestionTitle" class="selected-question">질문을 선택해주세요.</h3>
+        <label for="answer">🗣️ 내 답변</label>
+        <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+            <button class="btn btn-mic" id="micBtn" onclick="toggleSTT()">🎤 말하기</button>
+            <span id="micStatus" style="font-size: 0.85em; color: #64748b; align-self: center;"></span>
+        </div>
+        <textarea id="answer" rows="5" placeholder="당신의 논리를 펼쳐보세요..."></textarea>
+        <button class="btn btn-submit" onclick="getFeedback()">팩폭 맞기 🥊</button>
+    </section>
+
 </div>
 
-<div class="box" id="feedbackBox">
-    <h3 style="margin-top: 0;">[면접관의 피드백]</h3>
-    <div id="feedbackText"></div>
-    <button class="btn-tts" onclick="playTTS()">🔊 음성으로 듣기 (TTS)</button>
-    <button class="btn-stop" onclick="stopTTS()">🔇 듣기 멈춰!</button>
+<div id="feedbackModal" class="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-panel">
+        <div id="modalLoading" class="modal-loading">
+            <div class="modal-characters">
+                <div class="upper-layer">
+                    <div class="block black"><div class="eye left"><div class="pupil"></div></div><div class="eye right"><div class="pupil"></div></div></div>
+                    <div class="block silver"><div class="eye left"><div class="pupil"></div></div><div class="eye right"><div class="pupil"></div></div></div>
+                </div>
+                <div class="lower-layer">
+                    <div class="block lime"><div class="eye left"><div class="pupil"></div></div><div class="eye right"><div class="pupil"></div></div></div>
+                    <div class="block red"><div class="eye left"><div class="pupil"></div></div><div class="eye right"><div class="pupil"></div></div></div>
+                    <div class="block yellow"><div class="eye left"><div class="pupil"></div></div><div class="eye right"><div class="pupil"></div></div></div>
+                </div>
+            </div>
+            <p class="loading-text" id="loadingText">면접관들이 답변을 검토 중입니다...</p>
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+
+        <div id="modalResult" class="modal-result" style="display:none;">
+            <div class="modal-result-header">
+                <h3 class="modal-result-title">💬 면접관의 피드백</h3>
+                <button class="modal-close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div id="modalFeedbackText" class="modal-feedback-text"></div>
+            <div class="modal-tts-buttons">
+                <button class="btn btn-tts" onclick="playTTS()">🔊 음성으로 듣기</button>
+                <button class="btn btn-stop" onclick="stopTTS()">🔇 멈추기</button>
+                <button class="btn btn-close-modal" onclick="closeModal()">닫기</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<script>
-    let currentFeedback = "";
-
-    // 1. 스프링 서버(컨트롤러)로 데이터 쏘고 답변 받아오기
-    async function getFeedback() {
-        const question = document.getElementById('question').value.trim();
-        const answer = document.getElementById('answer').value.trim();
-        const loader = document.getElementById('loader');
-        const feedbackBox = document.getElementById('feedbackBox');
-        const feedbackTextDiv = document.getElementById('feedbackText');
-
-        if(!question || !answer) {
-            alert("질문이랑 답변을 빡세게 적어주세요!");
-            return;
-        }
-
-        // 로딩 표시 켜고, 결과창 숨기기
-        loader.style.display = 'block';
-        feedbackBox.style.display = 'none';
-        stopTTS(); // 새로운 요청 시 말하던 거 멈춤
-
-        try {
-            // 우리가 만든 스프링 API 주소로 POST 요청 날리기!
-            const response = await fetch('/api/v1/interview/feedback', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ question: question, answer: answer })
-            });
-
-            loader.style.display = 'none';
-            feedbackBox.style.display = 'block';
-
-            if(response.ok) {
-                currentFeedback = await response.text();
-                feedbackTextDiv.innerText = currentFeedback;
-            } else {
-                feedbackTextDiv.innerText = "❌ 서버에서 에러를 뿜었습니다! 인텔리제이 로그를 확인하세요.";
-            }
-        } catch (error) {
-            loader.style.display = 'none';
-            alert("통신 실패! 스프링 부트 서버가 켜져 있는지 확인하세요.");
-        }
-    }
-
-    // 2. TTS로 읽어주기 (마크다운 기호 제거 로직 포함)
-    function playTTS() {
-        if(!currentFeedback) return;
-
-        // AI 특유의 *, #, -, [ ] 같은 기호 싹 청소해서 사람이 말하듯 깔끔하게 만듦
-        let cleanText = currentFeedback
-            .replace(/[*#\-\_]/g, '')
-            .replace(/\[|\]/g, '')
-            .replace(/\n+/g, ' ')
-            .trim();
-
-        window.speechSynthesis.cancel(); // 혹시 말하고 있던 거 있으면 컷!
-
-        const speech = new SpeechSynthesisUtterance(cleanText);
-        speech.lang = 'ko-KR'; // 한국어 장착
-        speech.rate = 1.1;     // 살짝 빠르게 (안 답답하게)
-        speech.pitch = 1.0;
-
-        window.speechSynthesis.speak(speech);
-    }
-
-    // 3. TTS 멈추기 (팩폭이 너무 뼈 아플 때 긴급 정지용)
-    function stopTTS() {
-        window.speechSynthesis.cancel();
-    }
-</script>
+<div id="toast" class="toast"></div>
 
 </body>
 </html>

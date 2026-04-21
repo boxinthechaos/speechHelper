@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 팩폭 면접관</title>
+    <link rel="stylesheet" href="/css/interview/history.css">
+    <link rel="stylesheet" href="/css/common/common.css">
+    <script src="/js/interview/history.js" defer></script>
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
+
+
+
+<div class="page-wrapper">
+    <header class="page-header">
+        <h2>📜 나의 팩폭 기록장</h2>
+        <p class="page-subtitle">과거의 뼈아픈 조언들을 다시 복습해보세요</p>
+    </header>
+
+    <section class="box">
+        <div class="history-header-bar">
+            <span class="section-title">전체 기록</span>
+            <span class="history-count" id="historyCount">0개</span>
+        </div>
+
+        <div id="historyContainer">
+            <div class="card-loader">
+                <div class="spinner"></div>
+                기록을 불러오는 중입니다... ⏳
+            </div>
+        </div>
+    </section>
+</div>
+
+<div id="toast" class="toast"></div>
+
+</body>
+</html>
