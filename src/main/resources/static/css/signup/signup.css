@@ -174,12 +174,13 @@ body {
     color: #6ee7b7;
 }
 .step-line {
-    width: 40px;
+    width: 30px; /* 3단계라 조금 줄이는 게 예뻐요 */
     height: 2px;
     background: #334155;
-    margin-bottom: 20px; /* 텍스트 높이만큼 보정 */
+    margin-bottom: 20px;
     transition: background 0.3s;
 }
+
 .step-line.done {
     background: #10b981;
 }
@@ -359,3 +360,27 @@ h2 {
 }
 .toast.show { visibility: visible; opacity: 1; top: 30px; }
 .toast.error { background-color: #ef4444; }
+
+/* 인증 버튼 스타일 */
+.btn-verify-request, .btn-verify-confirm {
+    background-color: #334155;
+    border: 1px solid #475569;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-verify-request:hover, .btn-verify-confirm:hover {
+    background-color: #475569;
+    border-color: #64748b;
+}
+
+/* 이미 인증 완료된 필드 처리 */
+.input-field:read-only {
+    background-color: rgba(30, 41, 59, 0.4);
+    color: #94a3b8;
+    cursor: not-allowed;
+}

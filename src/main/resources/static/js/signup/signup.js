@@ -205,13 +205,13 @@ async function signUp() {
         });
 
         if (response.ok) {
-            // 스텝 인디케이터 완료 처리
-            document.getElementById('step-dot-1').classList.remove('active');
-            document.getElementById('step-dot-1').classList.add('done');
+            // 모든 스텝 완료 처리
+            document.getElementById('step-dot-2').classList.remove('active');
             document.getElementById('step-dot-2').classList.add('done');
-            document.querySelector('.step-line').classList.add('done');
+            document.getElementById('step-line-2').classList.add('done');
+            document.getElementById('step-dot-3').classList.add('done');
 
-            showToast('회원가입 성공! 로그인 페이지로 이동합니다 🎉');
+            showToast('회원가입 성공! 잠시 후 이동합니다.');
             setTimeout(() => {
                 window.location.href = '/api/v1/auth/loginP';
             }, 1800);
@@ -222,5 +222,62 @@ async function signUp() {
     } catch (error) {
         console.error('통신 에러:', error);
         showToast('서버와 통신 중 문제가 발생했습니다.', true);
+    }
+}
+
+async function sendEmailCode() {
+    const email = document.getElementById('email').value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!email || !emailRegex.test(email)) {
+        showToast('올바른 이메일을 입력해주세요.', true);
+        return;
+    }
+
+    try {
+        // 백엔드 AuthService.sendVerificationCode 호출용 엔드포인트 가정
+        const response = await fetch(`/api/v1/auth/email-verification?email=${email}`, {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            showToast('인증번호가 발송되었습니다. 메일함을 확인하세요!');
+        } else {
+            const msg = await response.text();
+            showToast(msg || '발송 실패', true);
+        }
+    } catch (e) {
+        showToast('서버 통신 에러', true);
+    }
+}
+
+// ─── 이메일 인증번호 확인 ───
+async function confirmEmailCode() {
+    const email = document.getElementById('email').value.trim();
+    const code = document.getElementById('verification-code').value.trim();
+    const hint = document.getElementById('hint-verify');
+
+    try {
+        // 백엔드 AuthService.verifyCode 호출용 엔드포인트 가정
+        const response = await fetch(`/api/v1/auth/email-verify?email=${email}&code=${code}`, {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            showToast('인증이 완료되었습니다!');
+
+            // 스텝 업데이트: 1단계 완료, 2단계 활성화
+            document.getElementById('step-dot-1').classList.add('done');
+            document.getElementById('step-line-1').classList.add('done');
+            document.getElementById('step-dot-2').classList.add('active');
+
+            // 입력창 고정
+            document.getElementById('verification-code').readOnly = true;
+            document.getElementById('email').readOnly = true;
+        } else {
+            setFieldState(document.getElementById('verification-code'), hint, '인증번호가 틀렸습니다.', 'invalid');
+        }
+    } catch (e) {
+        showToast('서버 통신 에러', true);
     }
 }

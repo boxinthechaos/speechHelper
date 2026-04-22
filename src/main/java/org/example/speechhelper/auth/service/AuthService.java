@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.example.speechhelper.auth.dto.LoginRequestDto;
 import org.example.speechhelper.auth.dto.SignUpRequestDto;
+import org.example.speechhelper.global.config.RedisUtil;
 import org.example.speechhelper.token.provider.TokenProvider;
 import org.example.speechhelper.user.entity.Role;
 import org.example.speechhelper.user.entity.User;
@@ -20,9 +21,36 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final EmailService emailService;
+    private final RedisUtil redisUtil;
+
+    public void sendVerificationCode(String email){
+        if(userRepository.existsByEmail(email)){
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+        String code = String.valueOf((int)(Math.random() * 899999) + 100000);
+        redisUtil.setDataExpire("AUTH_CODE:" + email, code, 5 * 60 * 1000L);
+        emailService.sendEmail(email, "[SpeechHelper] 인증 코드", "인증 코드: " + code);
+    }
+
+    public void verifyCode(String email, String code){
+        String savedCode = redisUtil.getData("AUTH_CODE:" + email);
+
+        if (savedCode == null || !savedCode.equals(code)) {
+            throw new IllegalArgumentException("인증 코드가 틀렸거나 만료되었습니다.");
+        }
+
+        redisUtil.setDataExpire("VERIFIED:" + email, "TRUE", 10 * 60 * 1000L);
+        redisUtil.deleteData("AUTH_CODE:" + email);
+    }
 
     @Transactional
     public void signUp(SignUpRequestDto requestDto){
+        String isVerified = redisUtil.getData("VERIFIED:" + requestDto.getEmail());
+        if (isVerified == null || !isVerified.equals("TRUE")) {
+            throw new IllegalArgumentException("이메일 인증이 완료되지 않았습니다.");
+        }
+
         if(userRepository.existsByEmail(requestDto.getEmail())){
             throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
         }
@@ -34,6 +62,8 @@ public class AuthService {
         user.setRole(Role.USER);
 
         userRepository.save(user);
+
+        redisUtil.deleteData("VERIFIED:" + requestDto.getEmail());
     }
 
     public Map<String, String> login(LoginRequestDto requestDto) {

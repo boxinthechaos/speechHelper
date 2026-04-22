@@ -20,8 +20,12 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody SignUpRequestDto requestDto) {
-        authService.signUp(requestDto);
-        return ResponseEntity.ok("회원가입이 완료되었습니다.");
+        try {
+            authService.signUp(requestDto);
+            return ResponseEntity.ok("회원가입 성공");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @PostMapping("/login")
@@ -51,5 +55,25 @@ public class AuthController {
     @GetMapping("/signupP")
     public String signupP(){
         return "signup";
+    }
+
+    @PostMapping("/email-verification")
+    public ResponseEntity<String> sendEmailCode(@RequestParam String email) {
+        try {
+            authService.sendVerificationCode(email);
+            return ResponseEntity.ok("인증 코드가 발송되었습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/email-verify")
+    public ResponseEntity<String> verifyEmailCode(@RequestParam String email, @RequestParam String code) {
+        try {
+            authService.verifyCode(email, code);
+            return ResponseEntity.ok("인증에 성공하였습니다.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }
