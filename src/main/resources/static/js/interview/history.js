@@ -2,15 +2,6 @@ window.onload = function () {
     fetchMyHistory();
 };
 
-// ─── 토스트 알림 ───
-function showToast(message, isError = false) {
-    const toast = document.getElementById('toast');
-    toast.innerText = message;
-    isError ? toast.classList.add('error') : toast.classList.remove('error');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
 // ─── 기록장 데이터 가져오기 ───
 async function fetchMyHistory() {
     const container = document.getElementById('historyContainer');
@@ -19,7 +10,7 @@ async function fetchMyHistory() {
         return;
     }
     try {
-        const response = await fetch('/api/v1/interview/history');
+        const response = await customFetch('/api/v1/interview/history');
         if (!response.ok) throw new Error('서버 에러');
 
         const historyList = await response.json();
@@ -73,9 +64,7 @@ async function deleteHistoryItem(id) {
     if (!confirm('이 팩폭 기록을 영구히 삭제하시겠습니까? 🗑️')) return;
 
     try {
-        const response = await fetch(`/api/v1/interview/history/${id}`, {
-            method: 'DELETE'
-        });
+        const response = await customFetch(`/api/v1/interview/history/${id}`, { method: 'DELETE' });
 
         if (response.ok) {
             showToast('기록이 삭제되었습니다.');

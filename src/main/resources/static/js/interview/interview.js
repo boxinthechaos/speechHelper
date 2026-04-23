@@ -15,15 +15,6 @@ window.onload = function () {
     fetchQuestions();
 };
 
-// ─── 토스트 ───
-function showToast(message, isError = false) {
-    const toast = document.getElementById('toast');
-    toast.innerText = message;
-    isError ? toast.classList.add('error') : toast.classList.remove('error');
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-}
-
 // ─── 모달 열기/닫기 로직 ───
 function openModalLoading() {
     const overlay = document.getElementById('feedbackModal');
@@ -67,7 +58,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal
 // ─── 1. 전체 질문 데이터 가져오기 및 카테고리 렌더링 ───
 async function fetchQuestions() {
     try {
-        const response = await fetch('/api/v1/interview/questions');
+        const response = await customFetch('/api/v1/interview/questions');
         if (response.ok) {
             allQuestionsData = await response.json();
             renderCategories();
@@ -156,7 +147,7 @@ async function getFeedback() {
     openModalLoading();
 
     try {
-        const response = await fetch('/api/v1/interview/answer', {
+        const response = await customFetch('/api/v1/interview/answer', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ questionId: selectedQuestionId, answer })

@@ -83,4 +83,24 @@ public class AuthService {
 
         return tokens;
     }
+
+    public Map<String, String> reissue(String refreshToken) {
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않거나 만료된 Refresh Token입니다.");
+        }
+
+        String email = tokenProvider.getEmailFromToken(refreshToken);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        String newAccessToken = tokenProvider.createAccessToken(user.getEmail(), user.getRole());
+        String newRefreshToken = tokenProvider.createRefreshToken(user.getEmail());
+
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("accessToken", newAccessToken);
+        tokens.put("refreshToken", newRefreshToken);
+
+        return tokens;
+    }
 }

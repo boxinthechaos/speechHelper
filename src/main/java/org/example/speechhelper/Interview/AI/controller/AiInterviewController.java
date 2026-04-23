@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.example.speechhelper.Interview.entity.InterviewHistory;
 import org.example.speechhelper.Interview.entity.InterviewQuestion; // 💡 새 엔티티 import
 import org.example.speechhelper.Interview.AI.service.AiInterviewService;
+import org.example.speechhelper.Interview.entity.PortfolioEvaluation;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +69,31 @@ public class AiInterviewController {
 
         aiInterviewService.deleteHistory(id, username);
 
+        return ResponseEntity.ok("삭제 완료");
+    }
+
+    @PostMapping("/portfolio/evaluate")
+    public ResponseEntity<String> evaluatePortfolio(
+            @RequestParam String portfolioUrl,
+            Principal principal) {
+
+        String username = (principal != null) ? principal.getName() : "anonymous";
+        String result = aiInterviewService.evaluatePortfolio(portfolioUrl, username);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/portfolio/history")
+    @ResponseBody
+    public ResponseEntity<List<PortfolioEvaluation>> getPortfolioHistory(Principal principal) {
+        String username = principal.getName();
+        List<PortfolioEvaluation> list = aiInterviewService.getPortfolioHistory(username);
+        return ResponseEntity.ok(list);
+    }
+
+    @DeleteMapping("/portfolio/history/{id}")
+    @ResponseBody
+    public ResponseEntity<String> deletePortfolioHistory(@PathVariable Long id, Principal principal) {
+        aiInterviewService.deletePortfolioHistory(id, principal.getName());
         return ResponseEntity.ok("삭제 완료");
     }
 }

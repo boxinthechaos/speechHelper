@@ -11,5 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class GlobalController {
 
     @GetMapping("/historyP")
-    public String historyP(){return "history";    }
+    public String historyP(){return "history"; }
+
+    @GetMapping("/portfolioP")
+    public String portfolioP(){ return "portfolio"; }
 }

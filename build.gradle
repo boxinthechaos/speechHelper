@@ -19,26 +19,56 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // ==========================================
+    // 1. Spring Boot Core & Web (웹 동작 핵심)
+    // ==========================================
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-    compileOnly 'org.projectlombok:lombok'
+
+    // ==========================================
+    // 2. Database & Cache (데이터베이스, 레디스)
+    // ==========================================
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // ==========================================
+    // 3. Security & JWT (인증, 보안, 로그인)
+    // ==========================================
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // ==========================================
+    // 4. Template Engine (화면 렌더링 - Thymeleaf)
+    // ==========================================
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+
+    // ==========================================
+    // 5. Web Scraping & Crawling (AI 포트폴리오 평가용)
+    // ==========================================
+    implementation 'org.jsoup:jsoup:1.17.2' // 정적 HTML 파싱용
+    implementation 'org.seleniumhq.selenium:selenium-java' // 동적 웹(노션 등) 크롤링
+    implementation 'io.github.bonigarcia:webdrivermanager:6.1.0' // 크롬 드라이버 자동 관리
+
+    // ==========================================
+    // 6. Utility (메일, 롬복 등 편의 기능)
+    // ==========================================
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+
+    // ==========================================
+    // 7. Testing (테스트 환경)
+    // ==========================================
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-thymeleaf-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testCompileOnly 'org.projectlombok:lombok'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testAnnotationProcessor 'org.projectlombok:lombok'
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.named('test') {

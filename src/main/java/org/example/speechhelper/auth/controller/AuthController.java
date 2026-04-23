@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.speechhelper.auth.dto.LoginRequestDto;
 import org.example.speechhelper.auth.service.AuthService;
 import org.example.speechhelper.auth.dto.SignUpRequestDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +75,42 @@ public class AuthController {
             return ResponseEntity.ok("인증에 성공하였습니다.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<String> reissue(@CookieValue(value = "refreshToken", required = false) String refreshToken,
+                                          HttpServletResponse response) {
+
+        // 1. 리프레시 토큰이 쿠키에 없는 경우
+        if (refreshToken == null || refreshToken.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token이 없습니다. 다시 로그인해주세요.");
+        }
+
+        try {
+            Map<String, String> tokens = authService.reissue(refreshToken);
+
+            // 3. 새로운 Access Token 쿠키 생성 및 설정
+            Cookie accessCookie = new Cookie("accessToken", tokens.get("accessToken"));
+            accessCookie.setHttpOnly(true);
+            accessCookie.setPath("/");
+            accessCookie.setMaxAge(60 * 30); // 30분
+            response.addCookie(accessCookie);
+
+            // (옵션) Refresh Token도 갱신(RTR 방식)한다면 아래 코드 추가
+            if (tokens.containsKey("refreshToken")) {
+                Cookie refreshCookie = new Cookie("refreshToken", tokens.get("refreshToken"));
+                refreshCookie.setHttpOnly(true);
+                refreshCookie.setPath("/");
+                refreshCookie.setMaxAge(14 * 24 * 60 * 60); // 14일
+                refreshCookie.setSecure(true);
+                response.addCookie(refreshCookie);
+            }
+
+            return ResponseEntity.ok("토큰 재발급 성공");
+
+        } catch (IllegalArgumentException e) { // 만료되었거나 유효하지 않은 Refresh Token인 경우
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 Refresh Token입니다.");
         }
     }
 }

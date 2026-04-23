@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포트폴리오 AI 평가</title>
+    <link rel="stylesheet" href="/css/portfolio/Portfolio.css">
+    <link rel="stylesheet" href="/css/common/common.css">
+</head>
+<body>
+
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="page-wrapper">
+    <div class="page-header">
+        <h2>🗂️ 포트폴리오 AI 평가</h2>
+        <p class="page-subtitle">포트폴리오 URL을 입력하면 AI 시니어 면접관이 즉시 평가해드립니다</p>
+    </div>
+
+    <!-- URL 입력 박스 -->
+    <div class="box">
+        <div class="section">
+            <div class="section-title">
+                <span class="section-icon">🔗</span>
+                포트폴리오 URL 입력
+            </div>
+            <label for="portfolioUrl">GitHub, Notion, 개인 웹사이트 등 공개 URL</label>
+            <div class="input-row">
+                <input
+                        type="url"
+                        id="portfolioUrl"
+                        class="url-input"
+                        placeholder="https://github.com/yourname 또는 https://your-portfolio.com"
+                />
+                <button class="btn btn-submit" id="evaluateBtn" onclick="evaluatePortfolio()">
+                    AI 평가받기
+                </button>
+            </div>
+            <p style="margin: 10px 0 0; font-size: 0.8em; color: #475569;">
+                ⚠️ 로그인이 필요한 Notion 페이지, 비공개 저장소는 분석이 어려울 수 있습니다
+            </p>
+        </div>
+    </div>
+
+    <!-- 평가 히스토리 -->
+    <div class="box">
+        <div class="section-title">
+            <span class="section-icon">📋</span>
+            내 평가 기록
+        </div>
+        <div id="historyList">
+            <div class="history-empty">아직 평가 기록이 없습니다.<br>위에서 포트폴리오 URL을 입력해 첫 평가를 받아보세요!</div>
+        </div>
+    </div>
+</div>
+
+<!-- 로딩 / 결과 모달 -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-panel" id="modalPanel">
+
+        <!-- 로딩 화면 -->
+        <div class="modal-loading" id="modalLoading">
+            <div class="modal-characters">
+                <div class="upper-layer">
+                    <div class="block silver">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                    <div class="block black">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                </div>
+                <div class="lower-layer">
+                    <div class="block lime"></div>
+                    <div class="block yellow">
+                        <div class="eye left"><div class="pupil"></div></div>
+                        <div class="eye right"><div class="pupil"></div></div>
+                    </div>
+                    <div class="block red"></div>
+                </div>
+            </div>
+            <p class="loading-text">시니어 면접관이 포트폴리오를 분석 중입니다...</p>
+            <div class="loading-dots">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+
+        <!-- 결과 화면 -->
+        <div class="modal-result" id="modalResult" style="display:none;">
+            <div class="modal-result-header">
+                <p class="modal-result-title">📊 AI 포트폴리오 평가 결과</p>
+                <button class="modal-close-btn" onclick="closeModal()">✕ 닫기</button>
+            </div>
+            <p class="modal-result-url" id="resultUrl"></p>
+            <div class="modal-feedback-text" id="feedbackText"></div>
+            <button class="btn btn-submit" style="width:100%;" onclick="closeModal()">확인</button>
+        </div>
+
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="/js/portfolio/portfolio.js"></script>
+<script src="/js/common/common.js"></script>
+</body>
+</html>
