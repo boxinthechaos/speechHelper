@@ -1,5 +1,6 @@
 package org.example.speechhelper.global.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.example.speechhelper.token.filter.JwtAuthenticationFilter;
 import org.example.speechhelper.token.provider.TokenProvider;
@@ -34,6 +35,20 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
                         .requestMatchers("/api/v1/interview/**").hasRole("USER")
                         .anyRequest().authenticated()
+                )
+
+                .exceptionHandling(exception -> exception
+                                .authenticationEntryPoint((request, response, authException) -> {
+                                    String acceptHeader = request.getHeader("Accept");
+                                    if (acceptHeader != null && acceptHeader.contains("text/html")) {
+                                        response.sendRedirect("/api/v1/auth/loginP");
+                                    }
+                                    else {
+                                        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+                                        response.setContentType("application/json;charset=UTF-8");
+                                        response.getWriter().write("{\"code\":\"TOKEN_EXPIRED\"}");
+                                    }
+                                })
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
 

@@ -9,21 +9,23 @@ function showToast(message, isError = false) {
 }
 
 // ─── 공통 Fetch (토큰 만료 자동 처리) ───
-async function customFetch(url, options = {}) {
+async function customFetch(url, options = {}, isRetry = false) {
     let response = await fetch(url, options);
 
-    if (response.status === 401) {
+    if (response.status === 401 && !isRetry) {
         console.log("Access Token 만료 감지! 재발급 시도...");
+
         const reissueResponse = await fetch('/api/v1/auth/reissue', { method: 'POST' });
 
         if (reissueResponse.ok) {
             console.log("토큰 재발급 성공, 원래 요청 재시도");
-            response = await fetch(url, options);
+            return customFetch(url, options, true); // 🔥 재귀 1회만
         } else {
             showToast('세션이 만료되었습니다. 다시 로그인해주세요.', true);
             setTimeout(() => { window.location.href = '/api/v1/auth/loginP'; }, 1500);
             throw new Error("세션 만료");
         }
     }
+
     return response;
 }
