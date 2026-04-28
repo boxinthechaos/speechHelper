@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🚀 AI Interview - 메인</title>
+  <link rel="stylesheet" th:href="@{/css/index/index.css}">
+  <link rel="stylesheet" href="/css/common/common.css">
+  <script src="/js/common/common.js" defer></script>
+</head>
+<body>
+
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="page-wrapper">
+  <div class="page-header">
+    <h2>AI와 함께하는 실전 면접 준비</h2>
+    <p class="page-subtitle">이력서와 포트폴리오를 바탕으로 맞춤형 피드백을 받아보세요.</p>
+  </div>
+
+  <div class="box">
+    <div class="welcome-section">
+      <h3 class="welcome-title">환영합니다! 무엇을 먼저 시작해볼까요?</h3>
+      <p class="welcome-desc">원하는 메뉴를 선택하여 면접 스킬을 레벨업 하세요.</p>
+    </div>
+
+    <div class="action-cards">
+      <a href="/api/v1/interview/feedback" class="action-card">
+        <span class="action-icon">🎙️</span>
+        <h4 class="action-title">면접 시작</h4>
+        <p class="action-desc">실전과 같은 환경에서<br>AI 면접관과 대화해보세요.</p>
+      </a>
+
+      <a href="/api/v1/interview/historyP" class="action-card">
+        <span class="action-icon">📝</span>
+        <h4 class="action-title">나의 기록장</h4>
+        <p class="action-desc">과거의 면접 기록과<br>피드백을 다시 복습하세요.</p>
+      </a>
+
+      <a href="/api/v1/interview/portfolioP" class="action-card">
+        <span class="action-icon">📂</span>
+        <h4 class="action-title">포트폴리오 평가</h4>
+        <p class="action-desc">내 포트폴리오의 강점과<br>보완점을 분석해 드립니다.</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

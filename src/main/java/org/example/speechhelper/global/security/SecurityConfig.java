@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/api/v1/interview/**").hasRole("USER")
+                        .requestMatchers("/api/v1/interview/**", "/api/v1/index").hasRole("USER")
                         .anyRequest().authenticated()
                 )
 

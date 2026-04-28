@@ -122,7 +122,7 @@ async function login() {
             showToast("로그인 성공! 면접장으로 이동합니다... 🚀");
 
             setTimeout(() => {
-                window.location.href = '/api/v1/interview/feedback';
+                window.location.href = '/api/v1/index';
             }, 1500);
 
         } else {

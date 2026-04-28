@@ -6,13 +6,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("/api/v1/interview")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class GlobalController {
 
-    @GetMapping("/historyP")
+    @GetMapping("/interview/historyP")
     public String historyP(){return "history"; }
 
-    @GetMapping("/portfolioP")
+    @GetMapping("/interview/portfolioP")
     public String portfolioP(){ return "portfolio"; }
+
+    @GetMapping("/index")
+    public String indexP(){ return "index"; }
 }
