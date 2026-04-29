@@ -29,3 +29,18 @@ async function customFetch(url, options = {}, isRetry = false) {
 
     return response;
 }
+
+// ─── 로그아웃 ───
+async function logout() {
+    try {
+        const response = await fetch('/api/v1/auth/logout', { method: 'POST' });
+        if (response.ok) {
+            showToast('로그아웃 되었습니다.');
+            setTimeout(() => { window.location.href = '/api/v1/auth/loginP'; }, 1000);
+        } else {
+            showToast('로그아웃 중 오류가 발생했습니다.', true);
+        }
+    } catch (e) {
+        showToast('로그아웃 중 오류가 발생했습니다.', true);
+    }
+}

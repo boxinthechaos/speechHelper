@@ -2,6 +2,7 @@ package org.example.speechhelper.global.security;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.speechhelper.global.config.RedisUtil;
 import org.example.speechhelper.token.filter.JwtAuthenticationFilter;
 import org.example.speechhelper.token.provider.TokenProvider;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final TokenProvider tokenProvider;
+    private final RedisUtil redisUtil;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -50,7 +52,8 @@ public class SecurityConfig {
                                     }
                                 })
                 )
-                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(tokenProvider, redisUtil),
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

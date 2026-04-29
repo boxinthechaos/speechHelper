@@ -6,7 +6,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.example.speechhelper.global.config.RedisUtil;
 import org.example.speechhelper.token.provider.TokenProvider;
+import org.example.speechhelper.user.entity.Role;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,31 +21,38 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenProvider tokenProvider;
+    private final RedisUtil redisUtil; // ← 추가
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // 1. Access Token 꺼내기
         String accessToken = resolveTokenFromCookie(request, "accessToken");
 
-        // 2. Access Token이 살아있다면? -> 정상 인증 처리
         if (accessToken != null && tokenProvider.validateToken(accessToken)) {
-            setAuthentication(accessToken);
-        }
-        // 3. Access Token이 없거나 만료되었다면? -> Refresh Token 확인!
-        else {
+            // AccessToken 블랙리스트 체크 추가
+            if (redisUtil.getData("BLACKLIST:" + accessToken) == null) {
+                setAuthentication(accessToken);
+            }
+        } else {
             String refreshToken = resolveTokenFromCookie(request, "refreshToken");
 
-            // Refresh Token이 존재하고 유효하다면 인공호흡 시작
             if (refreshToken != null && tokenProvider.validateToken(refreshToken)) {
+                // RefreshToken 블랙리스트 체크 추가
+                if (redisUtil.getData("BLACKLIST:" + refreshToken) != null) {
+                    // 로그아웃된 토큰이면 쿠키 삭제 후 차단
+                    expireCookie(response, "accessToken");
+                    expireCookie(response, "refreshToken");
+                    filterChain.doFilter(request, response);
+                    return;
+                }
+
                 String email = tokenProvider.getEmailFromToken(refreshToken);
-                String newAccessToken = tokenProvider.createAccessToken(email, org.example.speechhelper.user.entity.Role.USER);
+                String newAccessToken = tokenProvider.createAccessToken(email, Role.USER);
 
                 Cookie newAccessCookie = new Cookie("accessToken", newAccessToken);
                 newAccessCookie.setHttpOnly(true);
                 newAccessCookie.setPath("/");
                 newAccessCookie.setMaxAge(60);
-                //newAccessCookie.setMaxAge(60 * 30);
                 response.addCookie(newAccessCookie);
                 setAuthentication(newAccessToken);
             }
@@ -52,7 +61,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // 인증 처리를 담당하는 중복 로직을 분리한 헬퍼 메서드
+    // 쿠키 만료 헬퍼 메서드 추가
+    private void expireCookie(HttpServletResponse response, String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
     private void setAuthentication(String token) {
         String email = tokenProvider.getEmailFromToken(token);
         List<SimpleGrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));

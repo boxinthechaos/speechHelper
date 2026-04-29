@@ -25,11 +25,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
     // ==========================================
-    // 2. Database & Cache (데이터베이스, 레디스)
+    // 2. Database & Cache (데이터베이스, 레디스, h2)
     // ==========================================
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    testImplementation 'com.h2database:h2'
 
     // ==========================================
     // 3. Security & JWT (인증, 보안, 로그인)

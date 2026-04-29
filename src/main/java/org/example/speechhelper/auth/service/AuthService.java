@@ -89,6 +89,10 @@ public class AuthService {
             throw new IllegalArgumentException("유효하지 않거나 만료된 Refresh Token입니다.");
         }
 
+        if (redisUtil.getData("BLACKLIST:" + refreshToken) != null) {
+            throw new IllegalArgumentException("로그아웃된 토큰입니다.");
+        }
+
         String email = tokenProvider.getEmailFromToken(refreshToken);
 
         User user = userRepository.findByEmail(email)
@@ -102,5 +106,14 @@ public class AuthService {
         tokens.put("refreshToken", newRefreshToken);
 
         return tokens;
+    }
+
+    public void logout(String refreshToken) {
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않거나 만료된 Refresh Token입니다.");
+        }
+
+        long expiration = tokenProvider.getExpiration(refreshToken);
+        redisUtil.setDataExpire("BLACKLIST:" + refreshToken, "logout", expiration);
     }
 }

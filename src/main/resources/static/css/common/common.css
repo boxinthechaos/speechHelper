@@ -2,12 +2,35 @@
     position: sticky; top: 0; z-index: 100;
     background: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 16px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.nav-container { max-width: 780px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+
+/* 윗줄: 로고 + 로그아웃 */
+.nav-top {
+    max-width: 780px; margin: 0 auto; padding: 12px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* 아랫줄: 메뉴 */
+.nav-bottom {
+    max-width: 780px; margin: 0 auto; padding: 0 20px;
+}
+
+.nav-links {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; gap: 24px;
+}
+
+.nav-links li a {
+    display: block;
+    padding: 10px 0;
+}
+
 .nav-logo { font-size: 1.25em; font-weight: 800; color: #f1f5f9; text-decoration: none; letter-spacing: -0.5px; transition: color 0.2s ease; }
 .nav-logo:hover { color: #3b82f6; }
-.nav-links { list-style: none; margin: 0; padding: 0; display: flex; gap: 24px; }
 .nav-item { color: #94a3b8; text-decoration: none; font-size: 0.95em; font-weight: 600; transition: all 0.2s ease; }
 .nav-item:hover { color: #e2e8f0; }
 .nav-item.active { color: #3b82f6; text-shadow: 0 0 10px rgba(59, 130, 246, 0.4); }
+.logout-btn { color: #f87171 !important; }
+.logout-btn:hover { color: #ef4444 !important; text-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }

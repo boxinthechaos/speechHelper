@@ -2,8 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <nav th:fragment="navbar" class="navbar">
-    <div class="nav-container">
+    <div class="nav-top">
         <a href="/api/v1/index" class="nav-logo">🚀 AI Interview</a>
+        <a href="#" class="nav-item logout-btn" onclick="logout()">로그아웃</a>
+    </div>
+    <div class="nav-bottom">
         <ul class="nav-links">
             <li><a href="/api/v1/interview/feedback" class="nav-item">면접 시작</a></li>
             <li><a href="/api/v1/interview/historyP" class="nav-item">나의 기록장</a></li>
