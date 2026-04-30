@@ -18,4 +18,7 @@ public class GlobalController {
 
     @GetMapping("/index")
     public String indexP(){ return "index"; }
+
+    @GetMapping("/mypage")
+    public String myPage(){ return "mypage"; }
 }

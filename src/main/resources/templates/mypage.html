@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마이페이지</title>
+    <link rel="stylesheet" href="/css/mypage/mypage.css">
+    <link rel="stylesheet" href="/css/common/common.css">
+    <script src="/js/common/common.js" defer></script>
+    <script src="/js/mypage/mypage.js" defer></script>
+</head>
+<body>
+
+<div th:replace="~{fragments/nav :: navbar}"></div>
+
+<div class="bg-shape shape1"></div>
+<div class="bg-shape shape2"></div>
+<div class="bg-shape shape3"></div>
+
+<div class="page-wrapper">
+    <header class="page-header">
+        <h2>👤 마이페이지</h2>
+        <p class="page-subtitle">내 활동 현황과 프로필을 확인해보세요</p>
+    </header>
+
+    <!-- 프로필 카드 -->
+    <div class="box profile-box">
+        <div class="profile-avatar" id="profileAvatar">?</div>
+        <div class="profile-info">
+            <div class="profile-name" id="profileName">
+                <span class="skeleton skeleton-text" style="width:120px;"></span>
+            </div>
+            <div class="profile-email" id="profileEmail">
+                <span class="skeleton skeleton-text" style="width:200px;"></span>
+            </div>
+            <div class="profile-joined" id="profileJoined">
+                <span class="skeleton skeleton-text" style="width:140px;"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 통계 카드 -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🎤</div>
+            <div class="stat-value" id="statInterviewTotal">
+                <span class="skeleton skeleton-num"></span>
+            </div>
+            <div class="stat-label">총 면접 횟수</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">📅</div>
+            <div class="stat-value" id="statRecentInterview">
+                <span class="skeleton skeleton-num"></span>
+            </div>
+            <div class="stat-label">최근 면접일</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">🗂️</div>
+            <div class="stat-value" id="statPortfolioTotal">
+                <span class="skeleton skeleton-num"></span>
+            </div>
+            <div class="stat-label">포트폴리오 첨삭</div>
+        </div>
+    </div>
+
+    <!-- 포트폴리오 첨삭 요약 -->
+    <div class="box">
+        <div class="section-title-row">
+            <span class="section-title">🗂️ 최근 포트폴리오 첨삭</span>
+            <a href="/portfolio" class="link-more">전체 보기 →</a>
+        </div>
+        <div id="portfolioSummary">
+            <div class="card-loader">
+                <div class="spinner"></div>
+                불러오는 중...
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+</body>
+</html>

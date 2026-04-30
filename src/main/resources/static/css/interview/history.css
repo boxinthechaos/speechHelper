@@ -115,3 +115,35 @@ body {
 .toast { visibility: hidden; min-width: 250px; background-color: #10b981; color: #fff; text-align: center; border-radius: 12px; padding: 14px 20px; position: fixed; z-index: 9999; right: 30px; top: -50px; font-weight: 700; font-size: 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.4s cubic-bezier(0.68,-0.55,0.265,1.55), top 0.4s; }
 .toast.show { visibility: visible; opacity: 1; top: 30px; }
 .toast.error { background-color: #ef4444; }
+
+/* ─── 탭 ─── */
+.tab-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 0;
+}
+
+.tab-btn {
+    padding: 10px 20px;
+    font-size: 0.95em;
+    font-weight: 700;
+    font-family: inherit;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: -1px;
+}
+
+.tab-btn:hover {
+    color: #e2e8f0;
+}
+
+.tab-btn.active {
+    color: #a78bfa;
+    border-bottom-color: #a78bfa;
+}
